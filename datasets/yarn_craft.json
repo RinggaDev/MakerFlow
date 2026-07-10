@@ -1,0 +1,184 @@
+{
+  "category_id": "yarn_craft",
+  "category_label": "Kerajinan Benang & Tali",
+  "description": "Bahan baku utama pembentuk fisik produk kerajinan berbasis benang, tali, dan rajutan. Dirancang sebagai referensi 'Fixed Product' murni (tanpa alat bantu/tools) agar LLM Inference bebas dari halusinasi, mencerminkan ketersediaan serta harga terkini di marketplace Indonesia.",
+  "unit_note": "Harga per satuan yang umum dijual di pasaran Indonesia berdasarkan data realtime (Juli 2026).",
+  "materials": [
+    {
+      "id": "YC001",
+      "name": "Benang Rajut Polyester",
+      "unit": "gulung (100 gram)",
+      "price_range": { "min": 12000, "max": 18000, "currency": "IDR" },
+      "grade": ["standard", "premium"],
+      "common_use": ["tas rajut", "dompet rajut", "pouch", "sepatu rajut"],
+      "substitutes": ["YC003", "YC005", "YC008"],
+      "supplier_platforms": ["Tokopedia", "Shopee"],
+      "tags": ["benang", "rajut", "polyester", "poly", "tas"]
+    },
+    {
+      "id": "YC002",
+      "name": "Benang Rajut Chenille / Velvet Yarn",
+      "unit": "gulung (100 gram)",
+      "price_range": { "min": 16000, "max": 35000, "currency": "IDR" },
+      "grade": ["standard", "premium"],
+      "common_use": ["amigurumi jumbo", "selimut bayi", "bantal rajut", "boneka"],
+      "substitutes": [],
+      "supplier_platforms": ["Tokopedia", "Shopee"],
+      "tags": ["benang", "rajut", "chenille", "velvet", "amigurumi", "bludru"]
+    },
+    {
+      "id": "YC003",
+      "name": "Benang T-Shirt / Tyarn (Benang Kaos)",
+      "unit": "gulung (250 gram)",
+      "price_range": { "min": 20000, "max": 40000, "currency": "IDR" },
+      "grade": ["standard"],
+      "common_use": ["keranjang rajut", "tas macramé chunky", "karpet rajut"],
+      "substitutes": ["YC001", "YC005"],
+      "supplier_platforms": ["Tokopedia", "Shopee"],
+      "tags": ["benang", "t-shirt", "tyarn", "kaos", "chunky", "keranjang"]
+    },
+    {
+      "id": "YC004",
+      "name": "Tali Goni / Hemp Rope 2-3 Ply",
+      "unit": "meter",
+      "price_range": { "min": 300, "max": 1500, "currency": "IDR" },
+      "grade": ["standard", "premium"],
+      "common_use": ["dekorasi rustic", "tali souvenir", "hang tag", "garukan kucing"],
+      "substitutes": ["YC005"],
+      "supplier_platforms": ["Tokopedia", "Shopee", "toko craft lokal"],
+      "tags": ["tali", "goni", "rami", "hemp", "rustic", "souvenir"]
+    },
+    {
+      "id": "YC005",
+      "name": "Tali Kur / Macrame Cord (3-5mm)",
+      "unit": "meter",
+      "price_range": { "min": 1000, "max": 3500, "currency": "IDR" },
+      "grade": ["standard"],
+      "common_use": ["tas tali kur", "hiasan dinding macramé", "pot gantung"],
+      "substitutes": ["YC001", "YC003"],
+      "supplier_platforms": ["Tokopedia", "Shopee"],
+      "tags": ["tali", "kur", "macramé", "tas", "gantung"]
+    },
+    {
+      "id": "YC006",
+      "name": "Rantai Tas Selempang (Plus Pengait)",
+      "unit": "pcs",
+      "price_range": { "min": 10000, "max": 45000, "currency": "IDR" },
+      "grade": ["standard", "premium"],
+      "common_use": ["tali (strap) tas rajut", "tas selempang", "clutch bag"],
+      "substitutes": ["YC001", "YC003", "YC005"],
+      "supplier_platforms": ["Tokopedia", "Shopee"],
+      "tags": ["rantai", "tas", "aksesoris", "strap", "hardware"]
+    },
+    {
+      "id": "YC007",
+      "name": "Dakron / Fiber Fill Grade A",
+      "unit": "gram",
+      "price_range": { "min": 40, "max": 100, "currency": "IDR" },
+      "grade": ["standard", "premium"],
+      "common_use": ["isian amigurumi", "isian bantal rajut", "boneka"],
+      "substitutes": [],
+      "supplier_platforms": ["Tokopedia", "Shopee"],
+      "tags": ["dakron", "fiber fill", "isian", "amigurumi", "boneka"]
+    },
+    {
+      "id": "YC008",
+      "name": "Benang Rajut Katun Susu / Milk Cotton (5 Ply)",
+      "unit": "gulung (50 gram)",
+      "price_range": { "min": 8500, "max": 15000, "currency": "IDR" },
+      "grade": ["standard", "premium"],
+      "common_use": ["amigurumi", "pakaian bayi", "syal", "topi rajut"],
+      "substitutes": ["YC001", "YC002"],
+      "supplier_platforms": ["Tokopedia", "Shopee"],
+      "tags": ["benang", "rajut", "katun susu", "milk cotton", "amigurumi", "lembut"]
+    },
+    {
+      "id": "YC009",
+      "name": "Benang Sulam / Embroidery Floss",
+      "unit": "skein (8 meter)",
+      "price_range": { "min": 1500, "max": 8500, "currency": "IDR" },
+      "grade": ["standard", "premium"],
+      "common_use": ["menyulam wajah amigurumi", "detail dekorasi", "gelang persahabatan"],
+      "substitutes": [],
+      "supplier_platforms": ["Tokopedia", "Shopee", "toko craft lokal"],
+      "tags": ["benang", "sulam", "embroidery", "detail", "gelang"]
+    },
+    {
+      "id": "YC010",
+      "name": "Tali Prusik / Paracord (2mm - 3mm)",
+      "unit": "meter",
+      "price_range": { "min": 1000, "max": 3500, "currency": "IDR" },
+      "grade": ["standard", "premium"],
+      "common_use": ["gelang outdoor", "tali id card / lanyard", "gantungan kunci"],
+      "substitutes": [],
+      "supplier_platforms": ["Tokopedia", "Shopee"],
+      "tags": ["tali", "prusik", "paracord", "gelang", "lanyard"]
+    },
+    {
+      "id": "YC011",
+      "name": "Kawat Bulu / Pipe Cleaner (Chenille Stems)",
+      "unit": "pcs",
+      "price_range": { "min": 150, "max": 500, "currency": "IDR" },
+      "grade": ["standard"],
+      "common_use": ["bunga kawat bulu", "kerangka dalam amigurumi", "kerajinan anak"],
+      "substitutes": [],
+      "supplier_platforms": ["Tokopedia", "Shopee"],
+      "tags": ["kawat", "bulu", "pipe cleaner", "bunga", "kerangka"]
+    },
+    {
+      "id": "YC012",
+      "name": "Alas Tas Kulit Sintetis / Faux Leather Bag Base",
+      "unit": "pcs",
+      "price_range": { "min": 12000, "max": 35000, "currency": "IDR" },
+      "grade": ["standard", "premium"],
+      "common_use": ["dasar tas rajut", "keranjang rajut"],
+      "substitutes": [],
+      "supplier_platforms": ["Tokopedia", "Shopee"],
+      "tags": ["alas", "tas", "kulit sintetis", "hardware", "shaping"]
+    },
+    {
+      "id": "YC013",
+      "name": "Kancing Magnet / Magnetic Snap Button",
+      "unit": "set",
+      "price_range": { "min": 1500, "max": 4500, "currency": "IDR" },
+      "grade": ["standard"],
+      "common_use": ["penutup tas rajut", "dompet rajut", "pouch"],
+      "substitutes": ["YC014", "YC015"],
+      "supplier_platforms": ["Tokopedia", "Shopee", "toko craft lokal"],
+      "tags": ["kancing", "magnet", "hardware", "penutup", "tas"]
+    },
+    {
+      "id": "YC014",
+      "name": "Kancing Kayu Dekoratif / Wooden Buttons",
+      "unit": "lusin",
+      "price_range": { "min": 3000, "max": 8000, "currency": "IDR" },
+      "grade": ["standard"],
+      "common_use": ["mata boneka alternatif", "dekorasi pakaian rajut", "konektor masker"],
+      "substitutes": ["YC013"],
+      "supplier_platforms": ["Tokopedia", "Shopee"],
+      "tags": ["kancing", "kayu", "dekorasi", "aksesoris"]
+    },
+    {
+      "id": "YC015",
+      "name": "Resleting / Zipper (Gigi Besi/Plastik 20cm)",
+      "unit": "pcs",
+      "price_range": { "min": 2500, "max": 8000, "currency": "IDR" },
+      "grade": ["standard", "premium"],
+      "common_use": ["penutup tas", "dompet rajut", "pouch kosmetik"],
+      "substitutes": ["YC013"],
+      "supplier_platforms": ["Tokopedia", "Shopee"],
+      "tags": ["resleting", "zipper", "penutup", "hardware", "tas"]
+    },
+    {
+      "id": "YC016",
+      "name": "Ring D / D-Ring Logam",
+      "unit": "pcs",
+      "price_range": { "min": 500, "max": 2500, "currency": "IDR" },
+      "grade": ["standard", "premium"],
+      "common_use": ["konektor tali tas", "konektor lanyard"],
+      "substitutes": [],
+      "supplier_platforms": ["Tokopedia", "Shopee"],
+      "tags": ["ring d", "logam", "hardware", "konektor", "tas"]
+    }
+  ]
+}

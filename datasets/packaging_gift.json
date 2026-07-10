@@ -1,0 +1,85 @@
+{
+  "category_id": "packaging_gift",
+  "category_label": "Kemasan & Gift Box",
+  "description": "Bahan baku utama pembentuk fisik kemasan hadiah dan gift box. Dirancang sebagai referensi 'Fixed Product' murni (tanpa alat bantu/consumables seperti selotip atau stiker label) agar LLM Inference bebas dari halusinasi.",
+  "unit_note": "Harga per satuan terkecil yang umum dijual di pasaran Indonesia berdasarkan data realtime (Juli 2026).",
+  "materials": [
+    {
+      "id": "PG001",
+      "name": "Yellow Board / Hardboard",
+      "unit": "lembar (ukuran A3)",
+      "price_range": { "min": 2500, "max": 6000, "currency": "IDR" },
+      "grade": ["No. 30", "No. 40 (Tebal 2mm)"],
+      "common_use": ["struktur utama pembuatan hardbox custom", "gift box premium"],
+      "substitutes": ["PG002", "PG003"],
+      "supplier_platforms": ["Tokopedia", "toko kertas lokal"],
+      "tags": ["yellow board", "hardboard", "box", "kemasan", "hardbox"]
+    },
+    {
+      "id": "PG002",
+      "name": "Karton Duplex / Box Board",
+      "unit": "lembar (ukuran plano)",
+      "price_range": { "min": 3000, "max": 12000, "currency": "IDR" },
+      "grade": ["300gsm", "400gsm", "500gsm"],
+      "common_use": ["gift box lipat", "kemasan produk lapis luar"],
+      "substitutes": ["PG001", "PG003"],
+      "supplier_platforms": ["Tokopedia", "toko kertas lokal"],
+      "tags": ["karton", "duplex", "box", "kemasan", "gift"]
+    },
+    {
+      "id": "PG003",
+      "name": "Kardus Die Cut / Corrugated Mailer Box",
+      "unit": "pcs",
+      "price_range": { "min": 1500, "max": 8000, "currency": "IDR" },
+      "grade": ["B Flute", "E Flute"],
+      "common_use": ["outer box pengiriman", "gift box natural/eco"],
+      "substitutes": ["PG002"],
+      "supplier_platforms": ["Tokopedia", "Shopee", "pabrik kardus"],
+      "tags": ["kardus", "die cut", "mailer box", "eco", "kemasan"]
+    },
+    {
+      "id": "PG004",
+      "name": "Kertas Kraft Coklat / Kraft Paper",
+      "unit": "lembar (ukuran plano)",
+      "price_range": { "min": 1500, "max": 4000, "currency": "IDR" },
+      "grade": ["125gsm", "150gsm", "200gsm"],
+      "common_use": ["kertas pelapis (wrapping) hardbox", "sleeve kemasan"],
+      "substitutes": [],
+      "supplier_platforms": ["Tokopedia", "toko kertas lokal"],
+      "tags": ["kertas", "kraft", "wrapping", "pelapis", "gift"]
+    },
+    {
+      "id": "PG005",
+      "name": "Shredded Paper / Kertas Cacah Isian",
+      "unit": "gram (pack 50gr)",
+      "price_range": { "min": 2000, "max": 7000, "currency": "IDR" },
+      "grade": ["kertas samson", "kertas doorslag", "kertas hvs"],
+      "common_use": ["bantalan pelindung dalam box", "isian gift box"],
+      "substitutes": [],
+      "supplier_platforms": ["Tokopedia", "Shopee"],
+      "tags": ["shredded", "paper", "isian", "filler", "gift box"]
+    },
+    {
+      "id": "PG006",
+      "name": "Pita Satin / Ribbon",
+      "unit": "roll (20 yard)",
+      "price_range": { "min": 5000, "max": 15000, "currency": "IDR" },
+      "grade": ["lebar 1cm", "lebar 2.5cm"],
+      "common_use": ["pengikat dekoratif gift box", "aksen kemasan"],
+      "substitutes": ["PG007"],
+      "supplier_platforms": ["Tokopedia", "Shopee"],
+      "tags": ["pita", "satin", "ribbon", "dekorasi", "pengikat"]
+    },
+    {
+      "id": "PG007",
+      "name": "Twine / Tali Rami",
+      "unit": "meter",
+      "price_range": { "min": 100, "max": 500, "currency": "IDR" },
+      "grade": ["1mm", "2mm"],
+      "common_use": ["mengikat gift box tema rustic", "aksen natural"],
+      "substitutes": ["PG006"],
+      "supplier_platforms": ["Tokopedia", "Shopee"],
+      "tags": ["twine", "tali", "rami", "natural", "rustic"]
+    }
+  ]
+}

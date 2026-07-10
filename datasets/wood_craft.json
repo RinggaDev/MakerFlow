@@ -1,0 +1,74 @@
+{
+  "category_id": "wood_craft",
+  "category_label": "Kerajinan Kayu",
+  "description": "Bahan baku utama pembentuk fisik produk kerajinan berbasis kayu (khususnya figura kayu). Dirancang sebagai referensi 'Fixed Product' murni (tanpa alat bantu/consumables seperti lem, amplas, atau pernis) agar LLM Inference bebas dari halusinasi. Tidak mencakup cat atau pewarna karena bersifat preferensi personal.",
+  "unit_note": "Harga per satuan terkecil yang umum dijual di pasaran Indonesia berdasarkan data realtime (Juli 2026).",
+  "materials": [
+    {
+      "id": "WC001",
+      "name": "Kayu Pinus / Jati Belanda (List Profil Figura)",
+      "unit": "meter",
+      "price_range": { "min": 8000, "max": 25000, "currency": "IDR" },
+      "grade": ["standard", "premium (sudah diserut)"],
+      "common_use": ["rangka bingkai figura kayu", "kerangka utama"],
+      "substitutes": ["WC002", "WC003"],
+      "supplier_platforms": ["Tokopedia", "Shopee", "toko kayu lokal"],
+      "tags": ["kayu", "pinus", "jati belanda", "list", "figura"]
+    },
+    {
+      "id": "WC002",
+      "name": "Kayu MDF (Medium Density Fiberboard)",
+      "unit": "lembar (ukuran A4)",
+      "price_range": { "min": 2500, "max": 7000, "currency": "IDR" },
+      "grade": ["3mm", "6mm", "9mm"],
+      "common_use": ["penutup belakang (backboard) figura", "dekorasi kayu flat"],
+      "substitutes": ["WC003"],
+      "supplier_platforms": ["toko material lokal", "Tokopedia"],
+      "tags": ["kayu", "MDF", "figura", "backboard"]
+    },
+    {
+      "id": "WC003",
+      "name": "Kayu Triplek / Plywood",
+      "unit": "lembar (ukuran A4)",
+      "price_range": { "min": 3000, "max": 8000, "currency": "IDR" },
+      "grade": ["3mm", "6mm", "9mm"],
+      "common_use": ["dasar figura kayu", "backboard alternatif"],
+      "substitutes": ["WC002"],
+      "supplier_platforms": ["toko material lokal", "Tokopedia"],
+      "tags": ["kayu", "triplek", "plywood", "figura"]
+    },
+    {
+      "id": "WC004",
+      "name": "Lembaran Akrilik Bening / Clear Acrylic",
+      "unit": "lembar (ukuran A4)",
+      "price_range": { "min": 15000, "max": 35000, "currency": "IDR" },
+      "grade": ["2mm", "3mm"],
+      "common_use": ["pelindung depan figura (pengganti kaca)"],
+      "substitutes": [],
+      "supplier_platforms": ["Tokopedia", "Shopee"],
+      "tags": ["akrilik", "bening", "pelindung", "kaca", "figura"]
+    },
+    {
+      "id": "WC005",
+      "name": "Gantungan Pigura / Sawtooth Hanger Logam",
+      "unit": "pcs",
+      "price_range": { "min": 200, "max": 800, "currency": "IDR" },
+      "grade": ["standard", "premium tebal"],
+      "common_use": ["pengait dinding di bagian belakang figura"],
+      "substitutes": [],
+      "supplier_platforms": ["Tokopedia", "Shopee"],
+      "tags": ["gantungan", "sawtooth", "pigura", "hardware"]
+    },
+    {
+      "id": "WC006",
+      "name": "Paku Seng Mini / Flexipoint Hanger",
+      "unit": "pcs",
+      "price_range": { "min": 50, "max": 150, "currency": "IDR" },
+      "grade": ["standard"],
+      "common_use": ["penahan MDF/Akrilik pada rangka figura kayu"],
+      "substitutes": [],
+      "supplier_platforms": ["Tokopedia", "Shopee"],
+      "tags": ["paku", "flexipoint", "penahan", "hardware", "figura"]
+    }
+  ]
+}

@@ -1,0 +1,118 @@
+{
+  "category_id": "resin_craft",
+  "category_label": "Kerajinan Resin",
+  "description": "Bahan baku utama pembentuk fisik produk berbasis resin (epoxy dan UV) khususnya gantungan kunci (keychain). Dirancang sebagai referensi 'Fixed Product' murni (tanpa alat bantu/tools seperti cetakan silikon) agar LLM Inference bebas dari halusinasi, mencerminkan ketersediaan serta harga terkini di marketplace Indonesia. Tidak mencakup pewarna, pigmen, atau glitter karena bersifat preferensi personal.",
+  "unit_note": "Harga per satuan terkecil yang umum dijual di pasaran Indonesia berdasarkan data realtime (Juli 2026).",
+  "materials": [
+    {
+      "id": "RC001",
+      "name": "Resin Epoxy 2 Komponen (Clear/Bening)",
+      "unit": "gram",
+      "price_range": { "min": 100, "max": 250, "currency": "IDR" },
+      "grade": ["standard", "premium", "crystal clear"],
+      "common_use": ["keychain resin", "perhiasan resin", "papan nama resin"],
+      "substitutes": ["RC002"],
+      "supplier_platforms": ["Tokopedia", "Shopee"],
+      "tags": ["resin", "epoxy", "2 komponen", "key chain", "clear"]
+    },
+    {
+      "id": "RC002",
+      "name": "UV Resin (Hard Type)",
+      "unit": "gram",
+      "price_range": { "min": 300, "max": 800, "currency": "IDR" },
+      "grade": ["standard", "premium"],
+      "common_use": ["keychain resin tipis", "coating akrilik", "isian bezel"],
+      "substitutes": ["RC001"],
+      "supplier_platforms": ["Tokopedia", "Shopee"],
+      "tags": ["resin", "UV", "key chain", "coating", "hard"]
+    },
+    {
+      "id": "RC003",
+      "name": "Pengait Key Chain / Lobster Clasp Logam",
+      "unit": "pcs",
+      "price_range": { "min": 300, "max": 1000, "currency": "IDR" },
+      "grade": ["standard", "premium"],
+      "common_use": ["pengait utama keychain resin"],
+      "substitutes": ["RC004"],
+      "supplier_platforms": ["Tokopedia", "Shopee"],
+      "tags": ["pengait", "key chain", "clasp", "lobster", "hardware"]
+    },
+    {
+      "id": "RC004",
+      "name": "Split Ring / Ring Kunci Pipih",
+      "unit": "pcs",
+      "price_range": { "min": 100, "max": 400, "currency": "IDR" },
+      "grade": ["standard"],
+      "common_use": ["pengait utama keychain resin"],
+      "substitutes": ["RC003"],
+      "supplier_platforms": ["Tokopedia", "Shopee"],
+      "tags": ["ring", "kunci", "key chain", "split ring", "hardware"]
+    },
+    {
+      "id": "RC005",
+      "name": "Paku Sekrup Mini / Screw Eye Pins",
+      "unit": "pcs",
+      "price_range": { "min": 50, "max": 150, "currency": "IDR" },
+      "grade": ["standard"],
+      "common_use": ["ditanam ke dalam resin sebagai konektor gantungan"],
+      "substitutes": [],
+      "supplier_platforms": ["Tokopedia", "Shopee"],
+      "tags": ["paku", "sekrup", "eye pin", "konektor", "hardware"]
+    },
+    {
+      "id": "RC006",
+      "name": "Jump Ring / Ring O (Ring Sambung)",
+      "unit": "pcs",
+      "price_range": { "min": 20, "max": 100, "currency": "IDR" },
+      "grade": ["standard"],
+      "common_use": ["menyambungkan paku sekrup ke pengait keychain"],
+      "substitutes": [],
+      "supplier_platforms": ["Tokopedia", "Shopee"],
+      "tags": ["jump ring", "ring o", "sambungan", "konektor", "hardware"]
+    },
+    {
+      "id": "RC007",
+      "name": "Bingkai Logam Resin / Open Back Bezel Pendant",
+      "unit": "pcs",
+      "price_range": { "min": 1500, "max": 5000, "currency": "IDR" },
+      "grade": ["standard", "premium"],
+      "common_use": ["dasar/wadah langsung untuk UV resin keychain"],
+      "substitutes": ["RC008"],
+      "supplier_platforms": ["Tokopedia", "Shopee"],
+      "tags": ["bezel", "bingkai", "logam", "dasar resin", "hardware"]
+    },
+    {
+      "id": "RC008",
+      "name": "Lembaran Akrilik Kosong / Clear Acrylic Blank",
+      "unit": "pcs",
+      "price_range": { "min": 1000, "max": 3500, "currency": "IDR" },
+      "grade": ["standard", "premium"],
+      "common_use": ["media dasar pelapisan/coating resin untuk keychain"],
+      "substitutes": ["RC007"],
+      "supplier_platforms": ["Tokopedia", "Shopee", "toko craft lokal"],
+      "tags": ["akrilik", "blank", "dasar", "coating", "acrylic"]
+    },
+    {
+      "id": "RC009",
+      "name": "Rumbai Mini / Mini Tassel Keychain",
+      "unit": "pcs",
+      "price_range": { "min": 500, "max": 2000, "currency": "IDR" },
+      "grade": ["standard"],
+      "common_use": ["elemen dekoratif fisik yang digantung pada keychain resin"],
+      "substitutes": ["RC010"],
+      "supplier_platforms": ["Tokopedia", "Shopee"],
+      "tags": ["rumbai", "tassel", "dekorasi", "aksesoris"]
+    },
+    {
+      "id": "RC010",
+      "name": "Lonceng Mini / Mini Bell Charm",
+      "unit": "pcs",
+      "price_range": { "min": 300, "max": 1000, "currency": "IDR" },
+      "grade": ["standard"],
+      "common_use": ["elemen dekoratif fisik yang digantung pada keychain resin"],
+      "substitutes": ["RC009"],
+      "supplier_platforms": ["Tokopedia", "Shopee"],
+      "tags": ["lonceng", "bell", "charm", "dekorasi", "aksesoris"]
+    }
+  ]
+}

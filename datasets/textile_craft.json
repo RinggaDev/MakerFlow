@@ -1,0 +1,162 @@
+{
+  "category_id": "textile_craft",
+  "category_label": "Kerajinan Tekstil & Kain",
+  "description": "Bahan baku utama pembentuk fisik produk berbasis kain dan tekstil (seperti totebag, pouch, dan tas kain). Dirancang sebagai referensi 'Fixed Product' murni (tanpa alat bantu atau consumables seperti benang jahit) agar LLM Inference pada Arsitektur RAG bebas dari halusinasi, mencerminkan ketersediaan serta harga terkini di marketplace Indonesia. Tidak mencakup pewarna kain atau warna spesifik karena bersifat preferensi personal.",
+  "unit_note": "Harga per satuan yang umum dijual di pasaran Indonesia berdasarkan data realtime (Juli 2026).",
+  "materials": [
+    {
+      "id": "TC001",
+      "name": "Kain Kanvas (Canvas 10oz - 12oz)",
+      "unit": "meter",
+      "price_range": { "min": 25000, "max": 55000, "currency": "IDR" },
+      "grade": ["standard", "premium", "water repellent"],
+      "common_use": ["totebag kanvas", "pouch", "tas ransel", "sepatu kain"],
+      "substitutes": ["TC002", "TC003"],
+      "supplier_platforms": ["Tokopedia", "Shopee", "toko kain lokal"],
+      "tags": ["kanvas", "kain", "totebag", "tas", "tebal"]
+    },
+    {
+      "id": "TC002",
+      "name": "Kain Blacu / Calico Fabric",
+      "unit": "meter",
+      "price_range": { "min": 9000, "max": 18000, "currency": "IDR" },
+      "grade": ["greige", "putih tulang"],
+      "common_use": ["totebag blacu", "goodie bag", "kantong serut"],
+      "substitutes": ["TC001", "TC004"],
+      "supplier_platforms": ["Tokopedia", "Shopee", "toko kain lokal"],
+      "tags": ["blacu", "calico", "kain", "totebag", "eco-friendly"]
+    },
+    {
+      "id": "TC003",
+      "name": "Kain Drill (American/Japan Drill)",
+      "unit": "meter",
+      "price_range": { "min": 15000, "max": 35000, "currency": "IDR" },
+      "grade": ["standard", "premium"],
+      "common_use": ["totebag", "topi", "pouch", "celemek/apron"],
+      "substitutes": ["TC001"],
+      "supplier_platforms": ["Tokopedia", "Shopee", "toko kain lokal"],
+      "tags": ["drill", "cotton", "kain", "totebag", "apron"]
+    },
+    {
+      "id": "TC004",
+      "name": "Kain Spunbond (75gsm - 100gsm)",
+      "unit": "meter",
+      "price_range": { "min": 3000, "max": 8000, "currency": "IDR" },
+      "grade": ["75gsm", "100gsm"],
+      "common_use": ["goodie bag murah", "tas belanja", "lapisan dalam sementara"],
+      "substitutes": ["TC002"],
+      "supplier_platforms": ["Tokopedia", "Shopee"],
+      "tags": ["spunbond", "non-woven", "goodie bag", "tas belanja"]
+    },
+    {
+      "id": "TC005",
+      "name": "Kain Furing / Lining Fabric (Asahi/Ero)",
+      "unit": "meter",
+      "price_range": { "min": 8000, "max": 16000, "currency": "IDR" },
+      "grade": ["standard"],
+      "common_use": ["lapisan dalam (inner) tas", "pouch"],
+      "substitutes": [],
+      "supplier_platforms": ["Tokopedia", "Shopee", "toko kain lokal"],
+      "tags": ["furing", "lining", "kain dalam", "pouch", "tas"]
+    },
+    {
+      "id": "TC006",
+      "name": "Kain Keras / Interfacing (Staplek/Trikot)",
+      "unit": "meter",
+      "price_range": { "min": 6000, "max": 20000, "currency": "IDR" },
+      "grade": ["tipis", "sedang", "tebal"],
+      "common_use": ["memberikan struktur/kekakuan pada tas", "pouch"],
+      "substitutes": [],
+      "supplier_platforms": ["Tokopedia", "Shopee", "toko jahit lokal"],
+      "tags": ["kain keras", "interfacing", "penguat", "struktur", "tas"]
+    },
+    {
+      "id": "TC007",
+      "name": "Webbing Strap Katun (Lebar 2.5cm - 3.8cm)",
+      "unit": "meter",
+      "price_range": { "min": 2500, "max": 8000, "currency": "IDR" },
+      "grade": ["standard", "premium"],
+      "common_use": ["tali totebag", "strap tas selempang"],
+      "substitutes": ["TC008"],
+      "supplier_platforms": ["Tokopedia", "Shopee"],
+      "tags": ["webbing", "strap", "katun", "tali", "totebag"]
+    },
+    {
+      "id": "TC008",
+      "name": "Webbing Strap Nylon/Polyester (Lebar 2.5cm - 3.8cm)",
+      "unit": "meter",
+      "price_range": { "min": 1500, "max": 6000, "currency": "IDR" },
+      "grade": ["standard"],
+      "common_use": ["tali ransel", "strap tas selempang", "tas outdoor"],
+      "substitutes": ["TC007"],
+      "supplier_platforms": ["Tokopedia", "Shopee"],
+      "tags": ["webbing", "strap", "nylon", "polyester", "tali tas"]
+    },
+    {
+      "id": "TC009",
+      "name": "Pita Bisban / Bias Tape Katun",
+      "unit": "roll (27 meter)",
+      "price_range": { "min": 10000, "max": 25000, "currency": "IDR" },
+      "grade": ["standard"],
+      "common_use": ["menutup pinggiran kain/jahitan dalam tas", "lis pinggir"],
+      "substitutes": [],
+      "supplier_platforms": ["Tokopedia", "Shopee", "toko jahit lokal"],
+      "tags": ["bisban", "bias tape", "lis", "finishing", "tekstil"]
+    },
+    {
+      "id": "TC010",
+      "name": "Resleting / Zipper Coil Meteran",
+      "unit": "meter",
+      "price_range": { "min": 2000, "max": 6000, "currency": "IDR" },
+      "grade": ["standard", "YKK"],
+      "common_use": ["penutup utama pouch", "tas totebag tertutup"],
+      "substitutes": ["TC013", "TC014"],
+      "supplier_platforms": ["Tokopedia", "Shopee"],
+      "tags": ["resleting", "zipper", "coil", "penutup", "tas"]
+    },
+    {
+      "id": "TC011",
+      "name": "Kepala Resleting / Zipper Slider",
+      "unit": "pcs",
+      "price_range": { "min": 500, "max": 3000, "currency": "IDR" },
+      "grade": ["standard", "YKK"],
+      "common_use": ["pasangan resleting meteran"],
+      "substitutes": [],
+      "supplier_platforms": ["Tokopedia", "Shopee"],
+      "tags": ["kepala resleting", "zipper slider", "hardware"]
+    },
+    {
+      "id": "TC012",
+      "name": "Ring Gesper / Adjuster Strap Logam",
+      "unit": "pcs",
+      "price_range": { "min": 500, "max": 2500, "currency": "IDR" },
+      "grade": ["standard", "premium"],
+      "common_use": ["pengatur panjang pendek tali tas (sling bag)"],
+      "substitutes": [],
+      "supplier_platforms": ["Tokopedia", "Shopee"],
+      "tags": ["ring", "gesper", "adjuster", "hardware", "strap"]
+    },
+    {
+      "id": "TC013",
+      "name": "Velcro / Pita Perekat (Magic Tape)",
+      "unit": "meter",
+      "price_range": { "min": 3000, "max": 8000, "currency": "IDR" },
+      "grade": ["standard"],
+      "common_use": ["penutup praktis totebag", "kantong depan tas"],
+      "substitutes": ["TC010", "TC014"],
+      "supplier_platforms": ["Tokopedia", "Shopee", "toko jahit lokal"],
+      "tags": ["velcro", "perekat", "magic tape", "penutup", "tas"]
+    },
+    {
+      "id": "TC014",
+      "name": "Kancing Jepret / Snap Button Besi",
+      "unit": "set",
+      "price_range": { "min": 300, "max": 1500, "currency": "IDR" },
+      "grade": ["standard"],
+      "common_use": ["penutup tengah totebag", "penutup dompet kain"],
+      "substitutes": ["TC010", "TC013"],
+      "supplier_platforms": ["Tokopedia", "Shopee"],
+      "tags": ["kancing", "jepret", "snap button", "hardware", "penutup"]
+    }
+  ]
+}
