@@ -1,5 +1,6 @@
-Category Grouping Datasets
+# Grouping Kategori Dataset
 
+```
 /datasets
   ├── index.json
   │
@@ -18,3 +19,4 @@ Category Grouping Datasets
   │
   └── textile_canvas.json
       └── covers: Totebag Canvas
+```
