@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment
+.env
+.env.example
+
+# Testing
+.pytest_cache/
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Ignore backend
+@backend/
+backend/
