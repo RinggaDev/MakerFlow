@@ -17,3 +17,7 @@ Thumbs.db
 # Ignore backend
 @backend/
 backend/
+
+#Ignore Frontend
+@frontend/
+frontend/
