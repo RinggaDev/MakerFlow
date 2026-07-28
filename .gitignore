@@ -21,3 +21,7 @@ backend/
 #Ignore Frontend
 @frontend/
 frontend/
+
+.agents
+backend/.cursorrules
+frontend/cursorrules

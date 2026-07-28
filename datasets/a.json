@@ -1,0 +1,8 @@
+{
+  "product_name": "Kerajinan Miniatur Rajutan",
+  "target_qty": 20,
+  "budget_max": 150000,
+  "has_mandatory_material": true,
+  "mandatory_material_name": "Benang Wol",
+  "allow_substitution": true
+}

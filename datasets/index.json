@@ -15,31 +15,54 @@
       "id": "yarn_craft",
       "label": "Kerajinan Benang & Tali",
       "file": "yarn_craft.json",
-      "covers": ["gelang macramé", "bracelet", "miniatur rajutan", "key chain rajut", "amigurumi"]
+      "covers": [
+        "gelang macramé",
+        "bracelet",
+        "miniatur rajutan",
+        "key chain rajut",
+        "amigurumi"
+      ]
     },
     {
       "id": "resin_craft",
       "label": "Kerajinan Resin",
       "file": "resin_craft.json",
-      "covers": ["key chain resin", "perhiasan resin", "aksesori resin"]
+      "covers": [
+        "key chain resin",
+        "perhiasan resin",
+        "aksesori resin"
+      ]
     },
     {
       "id": "wood_craft",
       "label": "Kerajinan Kayu",
       "file": "wood_craft.json",
-      "covers": ["figura kayu", "dekorasi kayu", "miniatur kayu"]
+      "covers": [
+        "figura kayu",
+        "dekorasi kayu",
+        "miniatur kayu"
+      ]
     },
     {
       "id": "packaging_gift",
       "label": "Kemasan & Gift Box",
       "file": "packaging_gift.json",
-      "covers": ["kemasan gift box", "packaging produk", "hadiah"]
+      "covers": [
+        "kemasan gift box",
+        "packaging produk",
+        "hadiah"
+      ]
     },
     {
       "id": "textile_craft",
       "label": "Kerajinan Tekstil & Kain",
       "file": "textile_craft.json",
-      "covers": ["totebag canvas", "tas kain", "pouch kanvas"]
+      "covers": [
+        "totebag canvas",
+        "tas kain",
+        "pouch kanvas"
+      ]
     }
   ]
 }
+
