@@ -61,6 +61,11 @@ At MVP stage, MakerFlow operates on a manually curated dataset of **46 raw mater
 | 5 | Figura Kayu | `wood_craft` | `wood_craft.json` |
 | 6 | Kemasan Gift Box | `packaging_gift` | `packaging_gift.json` |
 | 7 | Totebag Canvas (Custom Draw) | `textile_craft` | `textile_craft.json` |
+| 8 | Gantungan Kunci Resin Kayu Premium + Rumbai | `resin_craft`, `wood_craft`, `yarn_craft`, `packaging_gift` | (multi-category integration) |
+| 9 | Pouch Kanvas Resleting dengan Gantungan Resin | `textile_craft`, `resin_craft`, `packaging_gift` | (multi-category integration) |
+| 10 | Paket Kado Figura Kayu & Boneka Rajut | `wood_craft`, `yarn_craft`, `packaging_gift` | (multi-category integration) |
+| 11 | Totebag Kanvas dengan Tali Makrame & Pegangan Resin | `textile_craft`, `yarn_craft`, `resin_craft`, `packaging_gift` | (multi-category integration) |
+
 
 *Note: Aesthetic/color raw materials (such as dyes, pigments, and yarn colorways) are explicitly excluded from dataset scope as they represent subjective design choices rather than physical production planning constraints.*
 
