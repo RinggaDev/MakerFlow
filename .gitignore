@@ -25,3 +25,8 @@ frontend/
 .agents
 backend/.cursorrules
 frontend/cursorrules
+
+.dockerignore
+
+Makerflow-SPEC.md
+Makerflow-git remote -vSPEC.md

@@ -1,5 +1,5 @@
 # MakerFlow — Master Project Context & Technical Specification
-**Version:** 1.2.0 | **Competition:** AIC COMPFEST 18 | **Theme:** Smart Manufacturing — AI for the Backbone of the Economy
+**Version:** 1.5.0 | **Competition:** AIC COMPFEST 18 | **Theme:** Smart Manufacturing — AI for the Backbone of the Economy
 
 > This document is the single source of truth for the MakerFlow MVP. It functions as a `.cursorrules` / system prompt for any AI coding agent entering this codebase. Every architectural decision, constraint, and convention documented here has been finalized. Do not deviate without explicit instruction.
 
@@ -14,6 +14,7 @@
 1. **Raw material estimation** — how much of each material is needed for a target production quantity
 2. **Cost optimization** — whether the available budget is sufficient, and where savings are possible
 3. **Substitution advisory** — recommending alternative materials when budget is insufficient, respecting any materials the user has locked as non-substitutable
+4. **Reverse quantity calculation** — if the available budget is insufficient for the target quantity, the AI proactively calculates the maximum affordable production quantity based on the estimated unit cost
 
 The core user interaction is a **single planning flow**: describe your product → AI classifies it → AI estimates materials and costs from a curated local dataset → user receives a structured production plan they can save.
 
@@ -49,7 +50,7 @@ These constraints are dictated by AIC COMPFEST 18 rulebook (Preliminary Round, P
 
 ### 1.5 Acknowledged Limitations (for Proposal)
 
-> *"At MVP stage, MakerFlow uses a manually curated dataset of ~46 raw materials across 5 product categories, sufficient to support 7 representative demo scenarios. The development roadmap includes real-time data integration via e-commerce scraping (Tokopedia, Indotrading) and expansion to additional product categories in subsequent iterations."*
+> *"At MVP stage, MakerFlow uses a manually curated dataset of ~53 raw materials across 5 product categories, sufficient to support 11 representative demo scenarios including advanced cross-category products. The system employs a Strict Grounded RAG approach, forbidding the AI from hallucinating external materials. The development roadmap includes real-time data integration via e-commerce scraping and expansion to additional product categories in subsequent iterations."*
 
 ---
 
@@ -80,9 +81,10 @@ These constraints are dictated by AIC COMPFEST 18 rulebook (Preliminary Round, P
 
 | Layer | Choice | Detail |
 |---|---|---|
-| Provider | Anthropic | Claude API |
-| Model | `claude-sonnet-4-6` | Fixed. Do not substitute |
-| SDK | `anthropic` Python SDK | 0.25.0 |
+| Provider (Release) | Anthropic | Claude API (Production standard) |
+| Provider (Dev/MVP) | Google AI | Gemini API (Development & MVP) |
+| Model Strategy | Hybrid Routing | Call 1: Lightweight (e.g., `gemini-2.0-flash-lite`) for fast classification. Call 2: Heavy Reasoning (e.g., `gemini-2.0-flash` or `claude-sonnet-4-6`) for complex estimation. |
+| SDK | Multi-SDK | `google-generativeai` (Dev) / `anthropic` (Release) |
 | Call pattern | Two sequential synchronous calls per planning request | See Section 4 |
 | Call 1 purpose | Product classification → category detection | |
 | Call 2 purpose | Material estimation + cost optimization from filtered dataset | |
@@ -106,7 +108,7 @@ These constraints are dictated by AIC COMPFEST 18 rulebook (Preliminary Round, P
 | Frontend port | 3000 | |
 | Backend port | 8000 | |
 | Dataset mount | Read-only volume | `./datasets:/app/datasets:ro` |
-| Environment secrets | `.env` at monorepo root | `ANTHROPIC_API_KEY` only |
+| Environment secrets | `.env` at monorepo root | `ANTHROPIC_API_KEY` (Release) + `GOOGLE_API_KEY` (Dev/MVP) |
 
 ---
 
@@ -240,21 +242,28 @@ The form has exactly **6 fields**. These are the only fields that exist. Do not 
 |---|---|---|---|---|
 | 1 | `product_name` | `string` (fixed enum) | Yes | User selects from fixed product list. Used for dataset category routing and displayed verbatim on output page. |
 | 2 | `target_qty` | `integer` | Yes | Target production quantity in units |
-| 3 | `budget_max` | `integer` (IDR) | Yes | Maximum budget ceiling in Rupiah |
+| 3 | `available_budget` | `integer` (IDR) | Yes | Total modal yang dimiliki user (Total Available Budget). Used for both forward validation and reverse quantity calculation. |
 | 4 | `has_mandatory_material` | `boolean` | Yes | Toggles visibility of fields 5 and 6. If `false`, fields 5–6 are null. |
 | 5 | `mandatory_material_name` | `string \| null` | Conditional | Free-text name of the locked material. Only sent if field 4 is `true`. |
 | 6 | `allow_substitution` | `boolean \| null` | Conditional | Whether non-mandatory materials may be substituted. Only sent if field 4 is `true`. |
 
-**Fixed product name list** (drives category routing, no free text allowed):
+**Fixed product name list** (drives category routing, no free text allowed). Single-category products map to a single-element array; cross-category products map to multiple category IDs loaded and merged simultaneously:
 
 ```
-"Gelang Macramé / Bracelet Custom"   → yarn_craft
-"Kerajinan Miniatur Rajutan"          → yarn_craft
-"Key Chain Rajut Custom Karakter"     → yarn_craft
-"Key Chain Resin"                     → resin_craft
-"Figura Kayu"                         → wood_craft
-"Kemasan Gift Box"                    → packaging_gift
-"Totebag Canvas (Custom Draw)"        → textile_craft
+── Single-Category ──────────────────────────────────────────────────────────
+"Gelang Macramé / Bracelet Custom"                      → ["yarn_craft"]
+"Kerajinan Miniatur Rajutan"                            → ["yarn_craft"]
+"Key Chain Rajut Custom Karakter"                       → ["yarn_craft"]
+"Key Chain Resin"                                       → ["resin_craft"]
+"Figura Kayu"                                           → ["wood_craft"]
+"Kemasan Gift Box"                                      → ["packaging_gift"]
+"Totebag Canvas (Custom Draw)"                          → ["textile_craft"]
+
+── Cross-Category (Multi-Domain) ────────────────────────────────────────────
+"Gantungan Kunci Resin Kayu Premium + Rumbai"           → ["resin_craft", "wood_craft", "yarn_craft", "packaging_gift"]
+"Pouch Kanvas Resleting dengan Gantungan Resin"         → ["textile_craft", "resin_craft", "packaging_gift"]
+"Paket Kado Figura Kayu & Boneka Rajut"                 → ["wood_craft", "yarn_craft", "packaging_gift"]
+"Totebag Kanvas dengan Tali Makrame & Pegangan Resin"   → ["textile_craft", "yarn_craft", "resin_craft", "packaging_gift"]
 ```
 
 **Pydantic Request Schema (`backend/models/request.py`):**
@@ -263,7 +272,7 @@ The form has exactly **6 fields**. These are the only fields that exist. Do not 
 class EstimateRequest(BaseModel):
     product_name: str                        # must match fixed product list
     target_qty: int = Field(gt=0)
-    budget_max: int = Field(gt=0)
+    available_budget: int = Field(gt=0)
     has_mandatory_material: bool
     mandatory_material_name: str | None = None
     allow_substitution: bool | None = None
@@ -284,7 +293,7 @@ class EstimateRequest(BaseModel):
 export interface EstimateRequest {
   product_name: string;
   target_qty: number;
-  budget_max: number;
+  available_budget: number;
   has_mandatory_material: boolean;
   mandatory_material_name: string | null;
   allow_substitution: boolean | null;
@@ -301,17 +310,18 @@ The output page renders all of the following sections. Every field listed here m
 Kategori    : {detected_category_label}   ← output dari deteksi AI (Call 1)
 Produk      : {product_name}              ← fixed, echoed from input
 Jumlah      : {target_qty} unit
-Anggaran    : Rp {budget_max}
+Anggaran    : Rp {available_budget}
 ```
 
 **Section B — Budget Status Card:**
 
 ```
-Status      : "sufficient" | "insufficient"
-Est. Min    : Rp {total_cost_min}
-Est. Max    : Rp {total_cost_max}
+Status               : "sufficient" | "insufficient"
+Est. Min             : Rp {total_cost_min}
+Est. Max             : Rp {total_cost_max}
+Estimasi QTY Mampu   : {estimated_affordable_qty} unit (Hanya muncul jika status "insufficient")
 ```
-Both min and max are displayed together in the same card for direct comparison.
+Both min and max are displayed together in the same card for direct comparison. `estimated_affordable_qty` is rendered only when `budget_status` is `"insufficient"`; the field is hidden entirely when status is `"sufficient"`.
 
 **Section C — Material Breakdown (horizontal card list, one card per material):**
 
@@ -365,10 +375,11 @@ class EstimateResponse(BaseModel):
     detected_category_label: str
     product_name: str
     target_qty: int
-    budget_max: int
+    available_budget: int
     budget_status: Literal["sufficient", "insufficient"]
     total_cost_min: int
     total_cost_max: int
+    estimated_affordable_qty: int | None = None  # Populated only if budget_status is "insufficient"
     materials_needed: list[MaterialItem]
     substitution_suggestions: list[SubstitutionSuggestion]
     procurement_advice: str
@@ -391,7 +402,8 @@ CALL 1 — LLM Classification
     Prompt (classify_prompt.py):
     ┌─────────────────────────────────────────────────────────────────┐
     │ You are a product category classifier for a craft production     │
-    │ planning system.                                                 │
+    │ planning system. A product may belong to MULTIPLE categories     │
+    │ simultaneously if it combines materials from different domains.  │
     │                                                                  │
     │ AVAILABLE CATEGORIES:                                            │
     │ - yarn_craft     : Kerajinan Benang & Tali                       │
@@ -404,42 +416,50 @@ CALL 1 — LLM Classification
     │                                                                  │
     │ Reply ONLY in this exact JSON, no markdown fences:              │
     │ {                                                                │
-    │   "category_id": "string",                                       │
-    │   "category_label": "string"                                     │
+    │   "category_ids": ["string"],                                    │
+    │   "category_labels": ["string"]                                  │
     │ }                                                                │
+    │                                                                  │
+    │ RULES:                                                           │
+    │ - category_ids MUST be an array, even for single-category items  │
+    │ - Only use IDs from the AVAILABLE CATEGORIES list above          │
+    │ - Order arrays so primary/dominant category is first             │
     └─────────────────────────────────────────────────────────────────┘
 
-    Returns: { category_id: str, category_label: str }
+    Returns: { category_ids: list[str], category_labels: list[str] }
+
+    > *Note: Gemini models often hallucinate keys like `primary_category` or return a string instead of an array. The prompt MUST strictly enforce `category_ids` and `category_labels` as arrays. See Section 5.5 for mandatory parsing pattern.*
 
 [3] Backend: Step B — Validate + Fallback
-    dataset_service.py validates category_id from Call 1:
-    - If category_id matches a known key in PRODUCT_CATEGORY_MAP → use it
-    - If category_id is unknown / hallucinated → fallback to PRODUCT_CATEGORY_MAP[product_name]
+    dataset_service.py validates category_ids list from Call 1:
+    - If ALL category_ids in the returned list match known KNOWN_CATEGORY_IDS → use the list
+    - If ANY category_id is unknown / hallucinated, or if result is not a list → fallback to
+      PRODUCT_CATEGORY_MAP[product_name] (which always returns a list[str])
 
-    PRODUCT_CATEGORY_MAP (fallback only):
+    PRODUCT_CATEGORY_MAP (fallback only — see Section 4.5 for full map):
     {
-      "Gelang Macramé / Bracelet Custom"  : "yarn_craft",
-      "Kerajinan Miniatur Rajutan"         : "yarn_craft",
-      "Key Chain Rajut Custom Karakter"    : "yarn_craft",
-      "Key Chain Resin"                    : "resin_craft",
-      "Figura Kayu"                        : "wood_craft",
-      "Kemasan Gift Box"                   : "packaging_gift",
-      "Totebag Canvas (Custom Draw)"       : "textile_craft",
+      "Gelang Macramé / Bracelet Custom"                   : ["yarn_craft"],
+      "Key Chain Resin"                                    : ["resin_craft"],
+      "Gantungan Kunci Resin Kayu Premium + Rumbai"        : ["resin_craft", "wood_craft", "yarn_craft", "packaging_gift"],
+      "Pouch Kanvas Resleting dengan Gantungan Resin"      : ["textile_craft", "resin_craft", "packaging_gift"],
+      ... (see Section 4.5 for complete map)
     }
 
 ─────────────────────────────────────────────
-DATASET RETRIEVAL — Backend loads .json
+DATASET RETRIEVAL — Backend loads .json files
 ─────────────────────────────────────────────
-[4] Backend: Step C — Load & Filter Dataset
+[4] Backend: Step C — Load & Filter Dataset (Multi-Category)
     dataset_service.py:
-    → Reads index.json → resolves file path for validated category_id
-    → Loads {category_id}.json (e.g. yarn_craft.json)
-    → Filters materials by keyword/tag match against product_name tokens
+    → Receives validated list[str] of category_ids (1 or more)
+    → For EACH category_id: reads index.json → resolves file path → loads .json
+    → Merges all materials arrays from all loaded files into one master list
+    → Applies keyword/tag filtering against product_name tokens across master list
     → If has_mandatory_material=true: force-includes material matching
-      mandatory_material_name by fuzzy name match (user typed free text,
-      no ID available)
-    → Fallback: if filter returns 0 results, pass all materials in category
-    → Hard cap: max 30 items forwarded to Claude Call 2
+      mandatory_material_name by fuzzy name match across merged master list
+    → Fallback: if filter returns 0 results, pass full merged master list
+    → Hard cap: max 45 items forwarded to Claude Call 2 (increased from 30
+      to safely accommodate multi-category merges while maintaining context
+      window hygiene)
 
 ─────────────────────────────────────────────
 CALL 2 — LLM Estimation
@@ -456,33 +476,49 @@ CALL 2 — LLM Estimation
     │ {filtered_materials_json}           ← injected from Step C        │
     │                                                                    │
     │ USER INPUT:                                                        │
-    │ - Produk           : {product_name}                                │
-    │ - Target Qty       : {target_qty} unit                             │
-    │ - Budget Max       : Rp {budget_max}                               │
-    │ - Bahan Wajib      : {mandatory_material_name or "Tidak ada"}      │
-    │ - Boleh Substitusi : {allow_substitution}                          │
+    │ - Produk            : {product_name}                               │
+    │ - Target Qty        : {target_qty} unit                            │
+    │ - Available Budget  : Rp {available_budget}                        │
+    │ - Bahan Wajib       : {mandatory_material_name or "Tidak ada"}     │
+    │ - Boleh Substitusi  : {allow_substitution}                         │
     │                                                                    │
     │ TASKS:                                                             │
     │ 1. Estimate qty_per_unit and qty_total for each required material  │
     │ 2. Calculate cost_min and cost_max per material from price_range   │
     │ 3. Sum total_cost_min and total_cost_max across all materials      │
-    │ 4. Set budget_status = "sufficient" if total_cost_max <= budget,   │
-    │    otherwise "insufficient"                                        │
+    │ 4. Set budget_status = "sufficient" if total_cost_max <=           │
+    │    available_budget, otherwise "insufficient"                      │
     │ 5. If allow_substitution=true AND budget insufficient:             │
     │    suggest cheaper alternatives from AVAILABLE DATA only           │
     │ 6. Write procurement_advice from supplier_platforms in the data    │
+    │ 7. If budget_status is "insufficient", perform REVERSE             │
+    │    CALCULATION: Calculate the estimated HPP (Harga Pokok          │
+    │    Produksi) per 1 unit. Divide the {available_budget} by the     │
+    │    HPP per unit. FLOOR the result to the nearest whole integer.   │
+    │    Populate the "estimated_affordable_qty" field with this number. │
     │                                                                    │
-    │ CONSTRAINTS:                                                       │
-    │ - Only use materials present in AVAILABLE RAW MATERIALS DATA       │
-    │ - Never invent materials, prices, or platforms outside the data    │
-    │ - mandatory_material_name must appear in output, never substituted │
-    │ - grade: pick the single most appropriate grade string per item    │
+    │ CONSTRAINTS (STRICT GROUNDED RAG - CRITICAL):                      │
+    │ 1. HANYA gunakan material yang tersedia di AVAILABLE RAW MATERIALS │
+    │    DATA.                                                            │
+    │ 2. DILARANG KERAS menambah, mengarang, atau menebak material,      │
+    │    harga, atau platform di luar data yang disediakan.              │
+    │ 3. Jika material yang dibutuhkan user tidak ada di data, abaikan   │
+    │    material tersebut dan tulis penjelasan di field "notes"         │
+    │    (contoh: "Kain parasut tidak tersedia di database kami,         │
+    │    estimasi biaya hanya mencakup bahan yang tersedia.").           │
+    │ 4. mandatory_material_name wajib ada di output, jangan            │
+    │    disubstitusi.                                                    │
+    │ 5. grade: pick the single most appropriate grade string per item.  │
+    │ 6. For reverse calculation (Task 7), use the average of cost_min  │
+    │    and cost_max to estimate HPP per unit. Always floor the final  │
+    │    quantity to an integer.                                         │
     │                                                                    │
     │ Reply ONLY in this exact JSON, no markdown fences:                 │
     │ {                                                                  │
     │   "budget_status": "sufficient|insufficient",                      │
     │   "total_cost_min": int,                                           │
     │   "total_cost_max": int,                                           │
+    │   "estimated_affordable_qty": int or null,                         │
     │   "materials_needed": [                                            │
     │     {                                                              │
     │       "id": "string",                                              │
@@ -515,7 +551,7 @@ RESPONSE ASSEMBLY & RENDER
 ─────────────────────────────────────────────
 [6] Backend assembles final EstimateResponse:
     Merges: category_label (Call 1) + estimation fields (Call 2)
-    + echoes: product_name, target_qty, budget_max from original request
+    + echoes: product_name, target_qty, available_budget from original request
     Validates entire object through Pydantic EstimateResponse model
     Returns to frontend
 
@@ -541,64 +577,63 @@ Category routing uses **LLM as primary, deterministic map as fallback**. The `.j
 ```python
 # Implement exactly in services/dataset_service.py
 
-# Fallback map — only used when Call 1 output fails validation
-PRODUCT_CATEGORY_MAP: dict[str, str] = {
-    "Gelang Macramé / Bracelet Custom": "yarn_craft",
-    "Kerajinan Miniatur Rajutan":        "yarn_craft",
-    "Key Chain Rajut Custom Karakter":   "yarn_craft",
-    "Key Chain Resin":                   "resin_craft",
-    "Figura Kayu":                       "wood_craft",
-    "Kemasan Gift Box":                  "packaging_gift",
-    "Totebag Canvas (Custom Draw)":      "textile_craft",
+# Fallback map — values are now lists to support cross-category products
+PRODUCT_CATEGORY_MAP: dict[str, list[str]] = {
+    "Gelang Macramé / Bracelet Custom": ["yarn_craft"],
+    "Kerajinan Miniatur Rajutan": ["yarn_craft"],
+    "Key Chain Rajut Custom Karakter": ["yarn_craft"],
+    "Key Chain Resin": ["resin_craft"],
+    "Figura Kayu": ["wood_craft"],
+    "Kemasan Gift Box": ["packaging_gift"],
+    "Totebag Canvas (Custom Draw)": ["textile_craft"],
+    "Gantungan Kunci Resin Kayu Premium + Rumbai": ["resin_craft", "wood_craft", "yarn_craft", "packaging_gift"],
+    "Pouch Kanvas Resleting dengan Gantungan Resin": ["textile_craft", "resin_craft", "packaging_gift"],
+    "Paket Kado Figura Kayu & Boneka Rajut": ["wood_craft", "yarn_craft", "packaging_gift"],
+    "Totebag Kanvas dengan Tali Makrame & Pegangan Resin": ["textile_craft", "yarn_craft", "resin_craft", "packaging_gift"],
 }
 
-KNOWN_CATEGORY_IDS = set(PRODUCT_CATEGORY_MAP.values())
+KNOWN_CATEGORY_IDS = {cid for ids in PRODUCT_CATEGORY_MAP.values() for cid in ids}
 
 
-def resolve_category(llm_category_id: str, product_name: str) -> str:
-    """
-    Validates LLM Call 1 output against known category IDs.
-    Falls back to hardcoded map if LLM output is invalid.
-    """
-    if llm_category_id in KNOWN_CATEGORY_IDS:
-        return llm_category_id  # LLM primary path
-    return PRODUCT_CATEGORY_MAP[product_name]  # deterministic fallback
+def resolve_category(llm_category_ids: list[str], product_name: str) -> list[str]:
+    """Validates LLM Call 1 output against known category IDs. Falls back to hardcoded map if invalid."""
+    if isinstance(llm_category_ids, list) and all(cid in KNOWN_CATEGORY_IDS for cid in llm_category_ids):
+        return llm_category_ids  # LLM primary path
+    return PRODUCT_CATEGORY_MAP.get(product_name, ["yarn_craft"])  # deterministic fallback
 
 
 def load_and_filter_materials(
-    category_id: str,
+    category_ids: list[str],
     product_name: str,
     mandatory_material_name: str | None,
 ) -> list[dict]:
-    """
-    Loads the correct .json dataset for category_id,
-    then filters down to materials relevant to the product.
-    Returns max 30 items for injection into Call 2 prompt.
-    """
+    """Loads multiple .json datasets, merges them, and filters down to relevant materials."""
     index = load_json("datasets/index.json")
-    category_entry = next(
-        c for c in index["categories"] if c["id"] == category_id
-    )
-    all_materials = load_json(f"datasets/{category_entry['file']}")["materials"]
 
+    # 1. Gather and merge materials from ALL relevant categories
+    merged_materials = []
+    for cat_id in category_ids:
+        category_entry = next(c for c in index["categories"] if c["id"] == cat_id)
+        cat_data = load_json(f"datasets/{category_entry['file']}")
+        merged_materials.extend(cat_data["materials"])
+
+    # 2. Filter logic
     keywords = product_name.lower().replace("/", " ").split()
-
     filtered = []
-    for m in all_materials:
-        # Force-include mandatory material by fuzzy name match
-        if mandatory_material_name:
-            if mandatory_material_name.lower() in m["name"].lower():
-                filtered.append(m)
-                continue
-        # Include if any keyword matches a material tag
+
+    for m in merged_materials:
+        if mandatory_material_name and mandatory_material_name.lower() in m["name"].lower():
+            filtered.append(m)
+            continue
         if any(kw in [t.lower() for t in m["tags"]] for kw in keywords):
             filtered.append(m)
 
-    # Safety fallback: if aggressive filter returns nothing, use all
+    # Safety fallback: if aggressive filter returns nothing, use all merged
     if not filtered:
-        filtered = all_materials
+        filtered = merged_materials
 
-    return filtered[:30]  # hard cap for context window hygiene
+    # 3. Hard cap for context window hygiene (increased to 45 for multi-category)
+    return filtered[:45]
 ```
 
 ### 4.6 Dataset Structure Contract
@@ -633,9 +668,9 @@ Each dataset JSON file must conform to this schema. Deviations will break `datas
 
 ### 4.7 Active Demo Scenarios
 
-These 7 scenarios constitute the full demo dataset for the preliminary submission:
+These 11 scenarios constitute the full demo dataset for the preliminary submission. The 4 cross-category products demonstrate advanced multi-domain AI reasoning and are a key differentiator in the competition narrative.
 
-| Product | Dataset File | Excluded from Dataset |
+| Product | Dataset File(s) | Excluded from Dataset |
 |---|---|---|
 | Gelang Macramé / Bracelet Custom | `yarn_craft.json` | Warna benang |
 | Kerajinan Miniatur Rajutan | `yarn_craft.json` | Warna benang |
@@ -644,6 +679,10 @@ These 7 scenarios constitute the full demo dataset for the preliminary submissio
 | Figura Kayu | `wood_craft.json` | Cat / warna kayu |
 | Kemasan Gift Box | `packaging_gift.json` | — |
 | Totebag Canvas (Custom Draw) | `textile_craft.json` | Cat air / pewarna kain |
+| **Gantungan Kunci Resin Kayu Premium + Rumbai** | `resin_craft.json`, `wood_craft.json`, `yarn_craft.json`, `packaging_gift.json` | Pewarna resin, cat kayu, warna benang |
+| **Pouch Kanvas Resleting dengan Gantungan Resin** | `textile_craft.json`, `resin_craft.json`, `packaging_gift.json` | Pewarna kain, pewarna resin |
+| **Paket Kado Figura Kayu & Boneka Rajut** | `wood_craft.json`, `yarn_craft.json`, `packaging_gift.json` | Cat kayu, warna benang |
+| **Totebag Kanvas dengan Tali Makrame & Pegangan Resin** | `textile_craft.json`, `yarn_craft.json`, `resin_craft.json`, `packaging_gift.json` | Pewarna kain, warna benang, pewarna resin |
 
 **Color/aesthetic materials are explicitly excluded from all datasets.** The platform provides structural raw material planning only. This is a deliberate product decision, not a data gap, and must be stated as such in the proposal.
 
@@ -688,25 +727,47 @@ Non-conventional commits will be considered non-compliant with AIC development s
 
 ### 5.4 Environment Variables
 
-Only one secret exists: `ANTHROPIC_API_KEY`. It is defined in `.env` at the monorepo root and injected into the backend container via `docker-compose.yml`. **The frontend has no access to this key and makes no direct calls to the Anthropic API.**
+Two secrets exist, one per provider tier. Both are defined in `.env` at the monorepo root and injected into the backend container via `docker-compose.yml`. **The frontend has no access to either key and makes no direct calls to any LLM API.**
 
 ```
 # .env (root, gitignored)
-ANTHROPIC_API_KEY=sk-ant-xxxxxxxxxxxxxxxx
+ANTHROPIC_API_KEY=sk-ant-xxxxxxxxxxxxxxxx  # For Release/Production
+GOOGLE_API_KEY=AIzaSy-xxxxxxxxxxxxxxxx     # For Dev/MVP (Hybrid Strategy)
 ```
 
-### 5.5 Error Handling Standards
+### 5.5 Error Handling & JSON Parsing Standards (CRITICAL FOR GEMINI)
 
-All Claude API calls must be wrapped in try/except. JSON parsing from Claude responses must strip markdown fences before parsing.
+All LLM API calls must be wrapped in try/except. JSON parsing from LLM responses **must use Regex** to strip markdown fences, as simple string replacement often fails with Gemini's output format.
+
+**Known Gemini Dev Bugs & Solutions:**
+
+1. **Schema Hallucination:** Gemini may return `primary_category` + `keywords` instead of the spec's `category_id` + `category_label`.
+   - *Solution:* Update Call 1 prompt to strictly enforce the exact JSON keys. Implement a fallback mapping in `dataset_service.py` if keys mismatch.
+
+2. **Markdown Fences:** Gemini models frequently wrap JSON in markdown (e.g., ` ```json ... ``` `).
+   - *Solution:* Use Regex to strip these fences before `json.loads`.
+
+**Mandatory Parsing Pattern (`llm_service.py` / `claude_service.py`):**
 
 ```python
-# Pattern for all claude_service.py calls
+import re
+import json
+
+def parse_llm_json_response(raw_text: str) -> dict:
+    # Use Regex to strip markdown fences (handles ```json ... ``` or ``` ... ```)
+    clean_text = re.sub(r'^```[a-zA-Z]*\n?', '', raw_text.strip())
+    clean_text = re.sub(r'\n?```$', '', clean_text.strip())
+    return json.loads(clean_text)
+```
+
+**Exception Handling (all LLM calls):**
+
+```python
 try:
-    response = client.messages.create(...)
-    raw = response.content[0].text
-    clean = raw.replace("```json", "").replace("```", "").strip()
-    return json.loads(clean)
-except (anthropic.APIError, json.JSONDecodeError) as e:
+    response = client.messages.create(...)  # or model.generate_content(...)
+    raw = response.content[0].text          # or response.text for Gemini
+    return parse_llm_json_response(raw)
+except (Exception, json.JSONDecodeError) as e:
     raise HTTPException(status_code=502, detail=f"AI service error: {str(e)}")
 ```
 
@@ -741,7 +802,7 @@ README must contain at minimum:
 
 | Method | Path | Description | Request Body | Response |
 |---|---|---|---|---|
-| `POST` | `/estimate` | Full planning pipeline: LLM classify → load dataset JSON → LLM estimate | `EstimateRequest` | `EstimateResponse` |
+| `POST` | `/estimate` | Full planning pipeline: LLM classify → load dataset JSON → LLM estimate | `EstimateRequest` | `EstimateResponse` (includes `estimated_affordable_qty` if budget is insufficient) |
 | `POST` | `/plans` | Save a completed production plan | `SavePlanRequest` | `{ plan_id: int, created_at: string }` |
 | `GET` | `/plans` | List all saved plans (history page) | — | `list[PlanSummary]` |
 | `GET` | `/plans/{id}` | Get full detail of a single saved plan | — | `PlanDetail` |
@@ -752,15 +813,18 @@ README must contain at minimum:
 
 ## Appendix B: Dataset File Registry
 
+Files marked with ✦ are shared across multiple cross-category products and are loaded in combination during multi-category dataset retrieval.
+
 | File | Category ID | Products Covered | Item Count |
 |---|---|---|---|
-| `yarn_craft.json` | `yarn_craft` | Macramé, Rajutan, Key Chain Rajut | 10 |
-| `resin_craft.json` | `resin_craft` | Key Chain Resin | 6 |
-| `wood_craft.json` | `wood_craft` | Figura Kayu | 7 |
-| `packaging_gift.json` | `packaging_gift` | Kemasan Gift Box | 8 |
-| `textile_craft.json` | `textile_craft` | Totebag Canvas | 7 |
-| **Total** | | | **~46 items** |
+| `yarn_craft.json` ✦ | `yarn_craft` | Macramé, Rajutan, Key Chain Rajut; + Gantungan Kunci Resin Kayu, Paket Kado Figura & Rajut, Totebag Makrame & Resin | 10 |
+| `resin_craft.json` ✦ | `resin_craft` | Key Chain Resin; + Gantungan Kunci Resin Kayu, Pouch Kanvas & Resin, Totebag Makrame & Resin | 6 |
+| `wood_craft.json` ✦ | `wood_craft` | Figura Kayu; + Gantungan Kunci Resin Kayu, Paket Kado Figura & Rajut | 7 |
+| `packaging_gift.json` ✦ | `packaging_gift` | Kemasan Gift Box; + Gantungan Kunci Resin Kayu, Pouch Kanvas & Resin, Paket Kado Figura & Rajut, Totebag Makrame & Resin | 8 |
+| `textile_craft.json` ✦ | `textile_craft` | Totebag Canvas; + Pouch Kanvas & Resin, Totebag Makrame & Resin | 7 |
+| **New cross-category items** | | Items added to support multi-domain products | **+15** |
+| **Total** | | | **~53 items** |
 
 ---
 
-*Document version 1.2.0 — updated July 2026. Category routing corrected: LLM Call 1 is now primary classifier; deterministic PRODUCT_CATEGORY_MAP is fallback only. Dataset .json is loaded by backend after Call 1 resolves category_id, then injected into Call 2 prompt. Architecture ready to scale to free-text product input without structural changes. Scope locked for AIC COMPFEST 18 Preliminary Round submission (deadline: August 25, 2026, 23:55 WIB).*
+*Document version 1.5.0 — updated August 2026. Reverse Calculation (Estimasi QTY) feature added. Section 1.1: 4th pain point added. Section 4.2: `budget_max` renamed to `available_budget` across table, Pydantic schema, and TypeScript interface to reflect "total modal" semantics. Section 4.3: `estimated_affordable_qty: int | None` added to `EstimateResponse` Pydantic model; Section B Budget Status Card updated with conditional display rule. Section 4.4 Call 2 prompt: USER INPUT updated to `available_budget`; Task 7 (Reverse Calculation via HPP per unit floor division) added; Constraint 6 (use avg of cost_min/cost_max, always floor) added; `estimated_affordable_qty` added to JSON schema. Appendix A: POST /estimate response column annotated. No changes to tech stack, folder structure, Call 1 logic, dataset filter, or Strict Grounded RAG constraints. Scope locked for AIC COMPFEST 18 Preliminary Round submission (deadline: August 25, 2026, 23:55 WIB).*
