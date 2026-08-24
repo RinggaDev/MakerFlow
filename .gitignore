@@ -11,6 +11,7 @@ node_modules/
 
 # Environment
 .env
+env_mf.zip
 
 # Database
 *.db
