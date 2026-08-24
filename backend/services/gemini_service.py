@@ -110,7 +110,7 @@ Reply ONLY in this exact JSON, no markdown fences:
 
 
 # ---------------------------------------------------------------------------
-# Call 2 — Estimation (uses MODEL_ESTIMATE: gemini-2.0-flash)
+# Call 2 — Estimation
 # ---------------------------------------------------------------------------
 
 def estimate_materials(
