@@ -10,6 +10,8 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6.svg?logo=typescript)](https://www.typescriptlang.org/)
 [![Python](https://img.shields.io/badge/Python-3.11%20%7C%203.12-3776AB.svg?logo=python)](https://www.python.org/)
 [![Docker](https://img.shields.io/badge/Docker-Compose%20v2-2496ED.svg?logo=docker)](https://www.docker.com/)
+[![Pydantic v2](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/pydantic/pydantic/main/docs/badge/v2.json)](https://pydantic.dev)
+
 
 ---
 
@@ -406,7 +408,7 @@ MakerFlow executes two specialized LLM calls sequentially for each production re
         ▼
 ┌────────────────────────────────────────────────────────┐
 │  AI CALL 1: Product Category Classifier                │
-│  Model: gemini-2.0-flash-lite                          │
+│  Model: gemini-3.1-flash-lite                          │
 │  • Maps product title to 1..N category_ids             │
 │  • Strict JSON Key Enforcement                         │
 │  • Fallback: PRODUCT_CATEGORY_MAP (Deterministic)      │
@@ -424,7 +426,7 @@ MakerFlow executes two specialized LLM calls sequentially for each production re
                         ▼
 ┌────────────────────────────────────────────────────────┐
 │  AI CALL 2: Estimation, Optimization & Reverse Calc    │
-│  Model: gemini-2.0-flash                               │
+│  Model: gemini-3.5-flash                               │
 │  • Strict Grounded Context (FORBIDDEN to invent data)  │
 │  • Computes unit BOM & total cost brackets (IDR)       │
 │  • Assesses Budget Sufficiency                         │
@@ -597,8 +599,8 @@ MakerFlow provides a friction-free workflow designed for non-technical artisans:
   - [x] Standardized JSON schema for 53 raw materials across 5 craft domains.
   - [x] Docker containerization with read-only dataset volume mounts.
 - [x] **Phase 2: Dual-Call AI Pipeline & Grounded RAG**
-  - [x] Fast category classification (`gemini-2.0-flash-lite`) with deterministic fallback.
-  - [x] Grounded BOM estimation (`gemini-2.0-flash`) with Task 7 reverse affordable quantity formula.
+  - [x] Fast category classification (`gemini-3.1-flash-lite`) with deterministic fallback.
+  - [x] Grounded BOM estimation (`gemini-3.5-flash`) with Task 7 reverse affordable quantity formula.
   - [x] Markdown fence regex sanitization and Pydantic v2 contract enforcement.
 - [x] **Phase 3: Frontend Dashboard & Persistence**
   - [x] Responsive Next.js 16 + React 19 UI with Tailwind CSS v4.
